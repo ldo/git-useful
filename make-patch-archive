@@ -1,0 +1,70 @@
+#!/usr/bin/python3
+#+
+# construct a zip archive containing a specified sequence of patches.
+# Invoke this script as follows
+#
+#     make-patch-archive <committish> <outfile>
+#
+# where <committish> specifies a commit or range of commits (e.g.
+# “master..HEAD”) and outfile is the output zip file to create.
+# The zipfile will contain a patch for each commit in chronological
+# order, named “0001.patch’, “0002.patch” etc.
+#
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+import sys
+import subprocess
+import zipfile
+
+#+
+# Miscellaneous useful stuff
+#-
+
+def runcmd(args) :
+    """runs a command, waits for it complete and returns its standard output."""
+    child = subprocess.Popen \
+      (
+        args = args,
+        close_fds = True,
+        stdout = subprocess.PIPE,
+      )
+    stdout, stderr = child.communicate()
+    if child.returncode != 0 :
+        raise RuntimeError("child terminated with status %#04x" % child.returncode)
+    #end if
+    return \
+        stdout.decode("utf-8")
+#end runcmd
+
+#+
+# Mainline
+#-
+
+if len(sys.argv) != 3 :
+    raise RuntimeError("need exactly 2 args, a committish and an output file name ")
+#end if
+committish, outfilename = sys.argv[1:]
+
+out = zipfile.ZipFile(outfilename, mode = "w", compression = zipfile.ZIP_DEFLATED)
+
+count = 0
+for \
+    commit \
+in \
+    runcmd(("git", "rev-list", "--reverse", committish)).split("\n") \
+:
+    if commit != "" :
+        count += 1
+        out.writestr \
+          (
+            "%04d.patch" % count,
+            runcmd(("git", "show", commit))
+          )
+    #end if
+#end for
+out.close()
+sys.stderr.write \
+  (
+    "%d %s written to %s.\n" % (count, ("commit", "commits")[count != 1], outfilename)
+  )
