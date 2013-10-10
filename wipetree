@@ -19,12 +19,18 @@ git_subdir_name = ".git"
 # Mainline
 #-
 
+verbose = False
 (opts, args) = getopt.getopt \
   (
 	sys.argv[1:],
 	"",
-	[]
+	["verbose"]
   )
+for keyword, value in opts :
+    if keyword == "--verbose" :
+        verbose = True
+    #end if
+#end for
 if len(args) != 1 :
 	raise getopt.GetoptError("need exactly one arg, the directory to delete the contents of")
 #end if
@@ -40,19 +46,19 @@ if not os.path.isdir(git_subdir) :
       )
 #end if
 for parent, dirs, files in os.walk(target_dir, topdown = False) :
-    sys.stdout.write("step: %s, %s, %s\n" % (repr(parent), repr(dirs), repr(files))) # debug
     if os.path.commonprefix([git_subdir, parent]) == git_subdir :
-        sys.stdout.write(" preserve inside .git\n") # debug
+        pass # preserve contents of .git directory
     else :
+        if verbose :
+            sys.stderr.write("wipe %s\n" % parent)
+        #end if
         for item in files :
-            sys.stdout.write(" remove %s\n" % os.path.join(parent, item)) # debug
             os.remove(os.path.join(parent, item))
         #end for
         for item in dirs :
             if parent == target_dir and item == git_subdir_name :
-                sys.stdout.write(" preserve %s\n" % os.path.join(parent, item)) # debug
+                pass # preserve .git directory
             else :
-                sys.stdout.write(" remove %s\n" % os.path.join(parent, item)) # debug
                 os.rmdir(os.path.join(parent, item))
             #end if
         #end for
