@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+#+
+# This script does a recursive delete of the contents of
+# a specified directory, excluding the .git subdirectory
+# (or a symlink thereto) at the top level. This subdirectory must
+# exist, otherwise the script will raise an exception without
+# deleting anything.
+#
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+import sys
+import os
+import getopt
+
+git_subdir_name = ".git"
+
+#+
+# Mainline
+#-
+
+(opts, args) = getopt.getopt \
+  (
+	sys.argv[1:],
+	"",
+	[]
+  )
+if len(args) != 1 :
+	raise getopt.GetoptError("need exactly one arg, the directory to delete the contents of")
+#end if
+target_dir = args[0]
+if not os.path.isdir(target_dir) :
+    raise getopt.GetoptError("not a dir: %s" % target_dir)
+#end if
+git_subdir = os.path.join(target_dir, git_subdir_name)
+if not os.path.isdir(git_subdir) :
+    raise getopt.GetoptError \
+      (
+        "no %(git)s subdir found in %(dir)s" % {"git" : git_subdir_name, "dir" : target_dir}
+      )
+#end if
+for parent, dirs, files in os.walk(target_dir, topdown = False) :
+    sys.stdout.write("step: %s, %s, %s\n" % (repr(parent), repr(dirs), repr(files))) # debug
+    if os.path.commonprefix([git_subdir, parent]) == git_subdir :
+        sys.stdout.write(" preserve inside .git\n") # debug
+    else :
+        for item in files :
+            sys.stdout.write(" remove %s\n" % os.path.join(parent, item)) # debug
+            os.remove(os.path.join(parent, item))
+        #end for
+        for item in dirs :
+            if parent == target_dir and item == git_subdir_name :
+                sys.stdout.write(" preserve %s\n" % os.path.join(parent, item)) # debug
+            else :
+                sys.stdout.write(" remove %s\n" % os.path.join(parent, item)) # debug
+                os.rmdir(os.path.join(parent, item))
+            #end if
+        #end for
+    #end if
+#end for
