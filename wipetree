@@ -35,7 +35,7 @@ if len(args) != 1 :
 	raise getopt.GetoptError("need exactly one arg, the directory to delete the contents of")
 #end if
 target_dir = args[0]
-if not os.path.isdir(target_dir) :
+if os.path.islink(target_dir) or not os.path.isdir(target_dir) :
     raise getopt.GetoptError("not a dir: %s" % target_dir)
 #end if
 git_subdir = os.path.join(target_dir, git_subdir_name)
