@@ -22,9 +22,9 @@ git_subdir_name = ".git"
 verbose = False
 (opts, args) = getopt.getopt \
   (
-	sys.argv[1:],
-	"",
-	["verbose"]
+    sys.argv[1:],
+    "",
+    ["verbose"]
   )
 for keyword, value in opts :
     if keyword == "--verbose" :
@@ -32,7 +32,7 @@ for keyword, value in opts :
     #end if
 #end for
 if len(args) != 1 :
-	raise getopt.GetoptError("need exactly one arg, the directory to delete the contents of")
+    raise getopt.GetoptError("need exactly one arg, the directory to delete the contents of")
 #end if
 target_dir = args[0]
 if os.path.islink(target_dir) or not os.path.isdir(target_dir) :
