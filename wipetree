@@ -6,6 +6,10 @@
 # exist, otherwise the script will raise an exception without
 # deleting anything.
 #
+# This script is useful prior to doing a git-checkout, to ensure
+# that the source tree doesn't contain anything that didn't come
+# from the commit.
+#
 # Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
 #-
 
