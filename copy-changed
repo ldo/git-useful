@@ -1,0 +1,23 @@
+#!/bin/bash
+#+
+# This script copies changed but uncommitted files in the current source tree
+# to another directory tree. The destination tree might be a build tree for
+# testing out the changes, to avoid build products cluttering up the source
+# tree.
+#
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+if [ $# != 1 ]; then
+    echo $'Usage:\n\t'"$0 <dst-tree>" 1>&2
+    exit 3
+fi
+dir="$1"
+if [ ! -d "$dir" ]; then
+    echo "not a directory: $dir"
+    exit 3
+fi
+IFS=$'\n'
+for f in $(git ls-files -m); do
+    cp -pv "$f" "$dir/$f"
+done
