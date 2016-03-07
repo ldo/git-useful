@@ -50,7 +50,7 @@ if not os.path.isdir(git_subdir) :
       )
 #end if
 for parent, dirs, files in os.walk(target_dir, topdown = False) :
-    if os.path.commonprefix([git_subdir, parent]) == git_subdir :
+    if os.path.commonpath([git_subdir, parent]) == git_subdir :
         pass # preserve contents of .git directory
     else :
         if verbose :
