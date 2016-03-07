@@ -50,7 +50,14 @@ if not os.path.isdir(git_subdir) :
       )
 #end if
 for parent, dirs, files in os.walk(target_dir, topdown = False) :
-    if os.path.commonpath([git_subdir, parent]) == git_subdir :
+    # The trouble with os.path.commonprefix is that it matches the initial
+    # “.git” in “.github”. Python 3.5 introduces os.path.commonpath which
+    # avoids this pitfall, however beware that that returns a more canonical-
+    # looking path (e.g. strips off leading “./”), causing naïve path
+    # comparisons to fail.
+    # However, a simple fix for os.path.commonprefix is to ensure all paths
+    # being compared end with “/”.
+    if os.path.commonprefix([git_subdir + "/", parent + "/"]) == git_subdir + "/" :
         pass # preserve contents of .git directory
     else :
         if verbose :
