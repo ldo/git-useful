@@ -1,0 +1,15 @@
+#!/bin/bash
+#+
+# This script updates all Git repositories it finds in subdirectories
+# of the current directory. It only rebases the local “master” branch
+# to the remote one.
+#
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+for d in $(find . -type d -name .git -print); do
+    d="${d%/.git}"
+    d="${d#./}"
+    echo "$d"
+    (cd "$d" && git fetch && git rebase origin/master master)
+done
+
