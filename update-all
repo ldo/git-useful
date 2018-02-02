@@ -10,7 +10,7 @@ for d in $(find . -type d -name .git -print); do
     d="${d%/.git}"
     d="${d#./}"
     echo "$d"
-    BRANCH=$(cd "$d" && git branch | perl -nle '/^\* (\S+)$/ && print "$1"')
-    (cd "$d" && git fetch && git rebase origin/$BRANCH $BRANCH)
+    BRANCH=$(cd -- "$d" && git branch | perl -nle '/^\* (\S+)$/ && print "$1"')
+    (cd -- "$d" && git fetch && git rebase origin/$BRANCH $BRANCH)
 done
 
