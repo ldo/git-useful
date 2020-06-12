@@ -1,0 +1,94 @@
+#!/usr/bin/python3
+#+
+# Generate a release archive from a repo commit. For repeatability,
+# the timestamp and contents for each file are taken from the last
+# commit affecting that file.
+#
+# This script takes an arg identifying a specific commit (e.g. a tag)
+# from which to generate the archive, followed by a name for the
+# output .zip file and then one or more names of files or directories
+# from the repo to include. For example, the command
+#
+#     ./make-snapshot v1.0 release fred.py tools/
+#
+# will make an archive for the commit tagged “v1.0” (assuming it
+# exists) under the name “release-v1.0.zip”, which contains “fred.py”
+# and all the files under the “tools/” subdirectory. All items in the
+# archive will have the prefix “release/” prefixed to their paths.
+#
+# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+#-
+
+import sys
+import os
+import time
+import subprocess
+import zipfile
+import getopt
+
+def git(*args) :
+    # convenience routine for simplifying git command calls.
+    return \
+        subprocess.check_output(("git",) + args)
+#end git
+
+opts, args = getopt.getopt \
+  (
+    sys.argv[1:],
+    "",
+    []
+  )
+if len(args) < 3 :
+    raise getopt.GetoptError("usage: %s «commit» «zipfilename» «file»|«dir»...")
+#end if
+upto, basename = args[:2]
+including = args[2:]
+if (
+        any(i.startswith("/") for i in including)
+    or
+        any(".." in i or "." in i for f in including for i in (f.split("/"),))
+) :
+    raise getopt.GetoptError("all included items must have relative paths")
+#nd if
+earliest = git("rev-list", "--reverse", upto).split(b"\n")[0].strip().decode()
+
+outfilename = "%s-%s.zip" % (basename, upto)
+out = zipfile.ZipFile(outfilename, "x")
+for item in including :
+    if item.endswith("/") :
+        items = sorted \
+          (
+            set
+              (
+                line.rsplit("\t", 1)[1]
+                for line in git("log", "--raw", item).decode().split("\n")
+                if line.startswith(":")
+              )
+          )
+          # every file that has ever existed in this directory in the commit history
+    else :
+        items = (item,)
+    #end if
+    for filename in items :
+        info = \
+            git("log", "--format=%ct:%H", "-n1", "%s..%s" % (earliest, upto), "--", filename) \
+            .strip()
+        if info != b"" :
+            item = zipfile.ZipInfo()
+            item.filename = "/".join((basename, filename))
+            item.external_attr = 0o100644 << 16
+            item.compress_type = zipfile.ZIP_DEFLATED
+            timestamp, commit_hash = info.split(b":")
+            timestamp = int(timestamp)
+            info = git("ls-tree", commit_hash, filename).strip()
+        #end if
+        if info != b"" :
+            object_hash = info.split(b"\t")[0].split(b" ")[2].decode()
+            object_contents = git("show", object_hash)
+            item.date_time = time.gmtime(timestamp)[:6]
+            out.writestr(item, object_contents)
+        #end if
+    #end for
+#end for
+out.close()
+sys.stdout.write("created archive %s\n" % outfilename)
