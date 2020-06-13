@@ -41,7 +41,7 @@ opts, args = getopt.getopt \
 if len(args) < 3 :
     raise getopt.GetoptError("usage: %s «commit» «zipfilename» «file»|«dir»...")
 #end if
-upto, basename = args[:2]
+upto, outbasename = args[:2]
 including = args[2:]
 if (
         any(i.startswith("/") for i in including)
@@ -52,7 +52,8 @@ if (
 #nd if
 earliest = git("rev-list", "--reverse", upto).split(b"\n")[0].strip().decode()
 
-outfilename = "%s-%s.zip" % (basename, upto)
+outfilename = "%s-%s.zip" % (outbasename, upto)
+basename = os.path.split(outbasename)[1]
 out = zipfile.ZipFile(outfilename, "x")
 for item in including :
     if item.endswith("/") :
@@ -60,7 +61,7 @@ for item in including :
           (
             set
               (
-                line.rsplit("\t", 1)[1]
+                line.split("\t", 1)[1]
                 for line in git("log", "--raw", item).decode().split("\n")
                 if line.startswith(":")
               )
