@@ -16,7 +16,8 @@
 # and all the files under the “tools/” subdirectory. All items in the
 # archive will have the prefix “release/” prefixed to their paths.
 #
-# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Copyright 2020 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Licensed under CC-BY <http://creativecommons.org/licenses/by/4.0/>.
 #-
 
 import sys

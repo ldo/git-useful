@@ -4,7 +4,8 @@
 # of the current directory. It only rebases the currently-checked-out
 # local branch to the same-named remote one from the remote named “origin”.
 #
-# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Copyright 2018 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Licensed under CC-BY <http://creativecommons.org/licenses/by/4.0/>.
 #-
 for d in $(find . -type d -name .git -print); do
     d="${d%/.git}"

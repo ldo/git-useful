@@ -10,7 +10,8 @@
 # that the source tree doesn't contain anything that didn't come
 # from the commit.
 #
-# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Copyright 2016 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Licensed under CC-BY <http://creativecommons.org/licenses/by/4.0/>.
 #-
 
 import sys

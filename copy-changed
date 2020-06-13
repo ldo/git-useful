@@ -5,7 +5,8 @@
 # might be a build tree for testing out the changes, to avoid build products
 # cluttering up the source tree.
 #
-# Written by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Copyright 2014 by Lawrence D'Oliveiro <ldo@geek-central.gen.nz>.
+# Licensed under CC-BY <http://creativecommons.org/licenses/by/4.0/>.
 #-
 
 if [ $# != 1 ]; then
