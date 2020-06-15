@@ -9,7 +9,7 @@
 # output .zip file and then one or more names of files or directories
 # from the repo to include. For example, the command
 #
-#     ./make-snapshot v1.0 release fred.py tools/
+#     ./make-snapshot release v1.0 fred.py tools/
 #
 # will make an archive for the commit tagged “v1.0” (assuming it
 # exists) under the name “release-v1.0.zip”, which contains “fred.py”
@@ -42,7 +42,7 @@ opts, args = getopt.getopt \
 if len(args) < 3 :
     raise getopt.GetoptError("usage: %s «commit» «zipfilename» «file»|«dir»...")
 #end if
-upto, outbasename = args[:2]
+outbasename, upto = args[:2]
 including = args[2:]
 if (
         any(i.startswith("/") for i in including)
