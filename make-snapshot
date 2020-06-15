@@ -33,12 +33,18 @@ def git(*args) :
         subprocess.check_output(("git",) + args)
 #end git
 
+overwrite = False
 opts, args = getopt.getopt \
   (
     sys.argv[1:],
-    "",
+    "y",
     []
   )
+for keyword, value in opts :
+    if keyword == "-y" :
+        overwrite = True
+    #end if
+#end for
 if len(args) < 3 :
     raise getopt.GetoptError("usage: %s «commit» «zipfilename» «file»|«dir»...")
 #end if
@@ -55,7 +61,7 @@ earliest = git("rev-list", "--reverse", upto).split(b"\n")[0].strip().decode()
 
 outfilename = "%s-%s.zip" % (outbasename, upto)
 basename = os.path.split(outbasename)[1]
-out = zipfile.ZipFile(outfilename, "x")
+out = zipfile.ZipFile(outfilename, ("x", "w")[overwrite])
 
 for entry in git("ls-tree", "-rz", upto).split(b"\0") :
     if entry != b"" :
