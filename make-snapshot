@@ -77,6 +77,12 @@ for entry in git("ls-tree", "-rz", upto).split(b"\0") :
             timestamp = \
                 git("log", "--format=%ct", "-n1", "%s..%s" % (earliest, upto), "--", filename) \
                 .strip()
+            if timestamp == b"" :
+                # only occurrence of filename is in first commit
+                timestamp = \
+                    git("log", "--format=%ct", "-n1", "--", filename) \
+                    .strip()
+            #end if
             timestamp = int(timestamp)
             item = zipfile.ZipInfo()
             item.filename = "/".join((basename, filename))
