@@ -312,13 +312,20 @@ if manifest_name != None :
         manifest = parse_manifest(open(manifest_name, "rt").read())
     #end if
     for entry in tree_entries :
-        includeit = False
-        for do_include, matching in manifest :
+        includeit = None
+        i = 0
+        while True :
+            if i == len(manifest) :
+                break
+            do_include, matching = manifest[i]
             if matching.search(entry["filepath"]) != None :
                 includeit = do_include
+                if includeit == False :
+                    break
             #end if
+            i += 1
         #end for
-        if includeit :
+        if includeit == True :
             tree_include.append(entry)
         #end if
     #end for
