@@ -110,7 +110,6 @@ def parse_manifest(contents) :
         def parse_wildcard_path(s, default) :
             # returns an re.Pattern string that matches a given string that
             # can contain shell-style wildcards.
-            sys.stderr.write("parse_wildcard_path(%s) => " % repr(s)) # debug
             if s != None :
                 if s.startswith("/") :
                     raise ValueError("relative pathspecs only")
@@ -170,7 +169,6 @@ def parse_manifest(contents) :
             else :
                 t = default
             #end if
-            sys.stderr.write("%s\n" % repr(t)) # debug
             return \
                 t
         #end parse_wildcard_path
@@ -192,7 +190,6 @@ def parse_manifest(contents) :
             # match filename anywhere in hierarchy
             pat = "(?:.+\\/)*" + pat
         #end if
-        sys.stderr.write("parse_wildcard(%s, %s) => %s\n" % (repr(parent), repr(child), repr(pat))) # debug
         return \
             re.compile("^" + pat + "$", re.DOTALL)
     #end parse_wildcard
