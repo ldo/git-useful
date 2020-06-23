@@ -263,7 +263,10 @@ for keyword, value in opts :
     #end if
 #end for
 if len(args) < 2 :
-    raise getopt.GetoptError("usage: %s [«options»] «zipfilename» «commit» [«file»|«dir»...]")
+    raise getopt.GetoptError \
+      (
+        "usage: %s [«options»] «zipfilename» «commit» [«file»|«dir»...]" % sys.argv[0]
+      )
 #end if
 outbasename, upto = args[:2]
 including = args[2:]
