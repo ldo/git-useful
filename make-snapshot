@@ -209,8 +209,13 @@ def parse_manifest(contents) :
                     #end for
                 elif keyword in ("recursive-include", "recursive-exclude") :
                     include = keyword == "recursive-include"
-                    if len(items) == 0 :
-                        raise ValueError("missing parent directory for “%s”" % keyword)
+                    if len(items) < 2 :
+                        raise ValueError \
+                          (
+                                "required parent directory and at least one child filespec for “%s”"
+                            %
+                                keyword
+                          )
                     #end if
                     parent = items.pop(0)
                     for item in items :
