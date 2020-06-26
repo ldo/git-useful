@@ -87,7 +87,7 @@ def parse_manifest(contents) :
                 if pos1 + 1 == len(s) :
                     raise ValueError("incomplete “\\” sequence")
                 #end if
-                cur_token += s[pos1 : pos1 + 2]
+                cur_token += s[:pos1 + 2]
                 s = s[pos1 + 2:]
             else :
                 if pos2 != 0 :
