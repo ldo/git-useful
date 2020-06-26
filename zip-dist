@@ -7,7 +7,7 @@
 #
 # Invoke this script as follows:
 #
-#     make-snapshot [«options»] «basename» «commit» [«file»|«dir»...]
+#     zip-dist [«options»] «basename» «commit» [«file»|«dir»...]
 #
 # where «basename» is the base output name of the archive to create,
 # without the .zip extension, and «commit» is any valid reference to
@@ -34,7 +34,7 @@
 #
 # For example, the command
 #
-#     make-snapshot release v1.0 fred.py tools/
+#     zip-dist release v1.0 fred.py tools/
 #
 # will make an archive for the commit tagged “v1.0” (assuming it
 # exists) under the name “release-v1.0.zip”, which contains “fred.py”
