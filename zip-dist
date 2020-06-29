@@ -69,6 +69,10 @@ def parse_manifest(contents) :
     # is True to include a file if it matches «pattern», False to exclude it.
 
     def tokenize_line(s) :
+        if "\t" in s :
+            raise SyntaxError("no tabs allowed")
+            # or I could fix parser to handle as part of whitespace
+        #end if
         result = []
         cur_token = None
         while len(s) != 0 :
