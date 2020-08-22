@@ -299,15 +299,17 @@ for entry in git("ls-tree", "-rz", upto).split(b"\0") :
         entry, filepath = entry.decode().split("\t", 1)
         file_mode, kind, object_hash = entry.split(" ")
         assert kind == "blob" # no “tree” entries with -r
-        file_mode = {"100644" : 0o100644, "100755" : 0o100755}[file_mode]
-        tree_entries.append \
-          (
-            {
-                "filepath" : filepath,
-                "mode" : file_mode,
-                "hash" : object_hash,
-            }
-          )
+        file_mode = {"100644" : 0o100644, "100755" : 0o100755, "120000" : None}[file_mode]
+        if file_mode != None : # ignore symlinks
+            tree_entries.append \
+              (
+                {
+                    "filepath" : filepath,
+                    "mode" : file_mode,
+                    "hash" : object_hash,
+                }
+              )
+        #end if
     #end if
 #endd for
 
